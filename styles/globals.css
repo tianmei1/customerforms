@@ -6,7 +6,7 @@ body {
   box-sizing: border-box;
 }
 
-#Form{
+#form{
   width: 400px;
   margin: 0 auto;
   padding: 20px;
@@ -30,4 +30,5 @@ body {
   width: 660px;
   margin: 0 auto;
   padding: 20px;
+  text-align: center;
 }
