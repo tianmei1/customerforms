@@ -32,3 +32,9 @@ body {
   padding: 20px;
   text-align: center;
 }
+
+.lead-container{
+  display: flex;
+  margin-left: 100px;
+  margin-right: 100px;
+}

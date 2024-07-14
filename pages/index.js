@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import Button from "@mui/material/Button";
 import CustomerForm from "../components/CustomerForm";
+import Button from "@mui/material/Button";
+import LoginModal from "../components/LoginModal";
+import { useRouter } from "next/router";
 
 const Home = () => {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const router = useRouter();
+
+  const handleViewLeadsClick = () => {
+    const session = JSON.parse(localStorage.getItem("session"));
+    if (session && session.username) {
+      router.push("/leads");
+    } else {
+      setIsLoginModalOpen(true);
+    }
+  };
+
+  const handleLogin = () => {
+    localStorage.setItem("session", JSON.stringify({ username: "admin" }));
+    setIsLoginModalOpen(false);
+    router.push("/leads");
+  };
+
   return (
     <>
       <Head>
@@ -31,15 +51,19 @@ const Home = () => {
         <div id="form">
           <CustomerForm />
         </div>
-        <Link href="/leads">
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ marginTop: "20px" }}
-          >
-            View Leads
-          </Button>
-        </Link>
+        <Button
+          variant="contained"
+          color="secondary"
+          style={{ marginTop: "20px" }}
+          onClick={handleViewLeadsClick}
+        >
+          View Leads
+        </Button>
+        <LoginModal
+          open={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLogin={handleLogin}
+        />
       </div>
     </>
   );
