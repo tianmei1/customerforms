@@ -21,7 +21,7 @@ export const formSchema = {
     },
     helpText: { type: "string", title: "How can we help you?" },
   },
-  required: ["firstName", "lastName", "email", "country"],
+  // required: ["firstName", "lastName", "email", "country"],
 };
 
 export const uiSchema = {

@@ -7,50 +7,75 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { formSchema, uiSchema } from "./formSchema";
-import { useDispatch } from "react-redux";
-import { submitForm } from "../redux/actions";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import CustomTextRenderer, {
   customTextControlTester,
 } from "./CustomTextRenderer";
-// import CustomCheckboxRenderer, {
-//   customCheckboxControlTester,
-// } from "./CustomCheckboxRenderer";
 import CustomCountryRenderer, {
   customCountryControlTester,
 } from "./CustomCountryRenderer";
+import { Alert } from "@mui/material";
 
 const renderers = [
   ...materialRenderers,
   { tester: customTextControlTester, renderer: CustomTextRenderer },
-  // { tester: customCheckboxControlTester, renderer: CustomCheckboxRenderer },
   { tester: customCountryControlTester, renderer: CustomCountryRenderer },
 ];
 
 const CustomerForm = () => {
-  const dispatch = useDispatch();
   const [isClient, setIsClient] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const handleSubmit = (data) => {
-    dispatch(submitForm(data));
+  const handleSubmit = () => {
+    const storedLeads = JSON.parse(localStorage.getItem("leads")) || [];
+    const newLead = {
+      ...formData,
+      visaCategory: formData.visaCategory || [], // Ensure visaCategory is an array
+      status: "PENDING",
+      submitted: new Date().toLocaleString(),
+    };
+    storedLeads.push(newLead);
+    localStorage.setItem("leads", JSON.stringify(storedLeads));
+    console.log("Form Submitted", newLead);
+
+    // Clear form and show success message
+    setFormData({});
+    setSuccessMessage("Form submitted successfully!");
+    setTimeout(() => setSuccessMessage(""), 3000); // Hide message after 3 seconds
   };
 
-  if (!isClient) {
-    return null; // Render nothing on the server side
-  }
-
   return (
-    <JsonForms
-      schema={formSchema}
-      uischema={uiSchema}
-      data={{}}
-      renderers={renderers}
-      cells={materialCells}
-      onChange={({ data }) => handleSubmit(data)}
-    />
+    isClient && (
+      <Box component="form" noValidate autoComplete="off">
+        {successMessage && (
+          <Alert severity="success" style={{ marginBottom: "20px" }}>
+            {successMessage}
+          </Alert>
+        )}
+        <JsonForms
+          schema={formSchema}
+          uischema={uiSchema}
+          data={formData}
+          renderers={renderers}
+          cells={materialCells}
+          onChange={({ data }) => setFormData(data)}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          style={{ marginTop: "20px" }}
+        >
+          Submit
+        </Button>
+      </Box>
+    )
   );
 };
 

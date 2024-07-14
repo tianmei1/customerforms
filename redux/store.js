@@ -1,17 +1,6 @@
+import { createStore } from "redux";
+import formReducer from "./reducer";
 
-import { createStore } from 'redux';
-
-const initialState = { leads: [] };
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'SUBMIT_FORM':
-      return { ...state, leads: [...state.leads, action.payload] };
-    default:
-      return state;
-  }
-};
-
-const store = createStore(reducer);
+const store = createStore(formReducer);
 
 export default store;

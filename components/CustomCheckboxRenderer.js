@@ -13,7 +13,7 @@ const CustomCheckboxRenderer = ({
   handleChange,
   path,
   label,
-  options,
+  options = { enum: [] },
 }) => (
   <FormControl component="fieldset" margin="normal">
     <label>{label}</label>
